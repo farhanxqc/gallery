@@ -349,7 +349,12 @@ export default function PolaroidLineCarousel({
       const o = opts.current
       const g = reduce ? 0 : o.swing
       const near = nearestAt(S.off, spacing, n)
-      for (let i = 0; i < n; i++) {
+      // visible range: slides whose center falls within viewport + cw/2 buffer
+      const viewMin = -cw * 0.6
+      const viewMax = w + cw * 0.6
+      const firstVisible = Math.max(0, Math.floor((S.off - w / 2 - viewMax) / spacing) + 1)
+      const lastVisible = Math.min(n - 1, Math.ceil((S.off - w / 2 - viewMin) / spacing))
+      for (let i = firstVisible; i <= lastVisible; i++) {
         const el = cards.current[i]
         if (!el) continue
         const x = w / 2 + i * spacing - S.off
@@ -367,6 +372,12 @@ export default function PolaroidLineCarousel({
         const y = stringY(x, w, y0, o.sag) - 6
         el.style.transform = "translate(" + (x - cw / 2).toFixed(1) + "px," + y.toFixed(1) + "px) rotate(" + a.toFixed(4) + "rad)"
         el.style.zIndex = String(i === near ? n + 1 : n - Math.abs(i - near))
+      }
+      // hide slides outside visible range
+      for (let i = 0; i < n; i++) {
+        if (i >= firstVisible && i <= lastVisible) continue
+        const el = cards.current[i]
+        if (el) el.style.visibility = "hidden"
       }
       pathRef.current?.setAttribute("d", "M0 " + y0 + " Q" + w / 2 + " " + (y0 + 2 * o.sag) + " " + w + " " + y0)
       if (near !== activeRef.current) {
