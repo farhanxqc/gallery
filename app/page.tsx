@@ -52,5 +52,5 @@ export default function DemoPhotos() {
     )
   }
 
-  return <PolaroidLineCarousel slides={PHOTO_SLIDES} cardWidth={160} />
+  return <PolaroidLineCarousel slides={PHOTO_SLIDES} />
 }
