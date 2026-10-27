@@ -270,8 +270,6 @@ export default function PolaroidLineCarousel({
   const srcs = slides.map((s) => s.image || "")
   const [dragging, setDragging] = React.useState(false)
   const [size, setSize] = React.useState({ w: 1200, h: 800, cw: cardWidth })
-  const [mounted, setMounted] = React.useState(false)
-  const mountedRef = React.useRef(false)
   const rootRef = React.useRef(null as HTMLDivElement | null)
   const pathRef = React.useRef(null as SVGPathElement | null)
   const cards = React.useRef([] as (HTMLDivElement | null)[])
@@ -373,10 +371,6 @@ export default function PolaroidLineCarousel({
         if (el) el.style.visibility = "hidden"
       }
       pathRef.current?.setAttribute("d", "M0 " + y0 + " Q" + w / 2 + " " + (y0 + 2 * o.sag) + " " + w + " " + y0)
-      if (!mountedRef.current) {
-        mountedRef.current = true
-        setMounted(true)
-      }
       if (near !== activeRef.current) {
         activeRef.current = near
         setActive(near)
@@ -489,7 +483,7 @@ export default function PolaroidLineCarousel({
         <path ref={pathRef} fill="none" stroke={string} strokeWidth="1.5" strokeLinecap="round" />
       </svg>
       {slides.map((sl, i) => (
-        <div key={i} className="pl-card" data-i={i} data-on={i === active ? "1" : "0"} ref={(el) => void (cards.current[i] = el)} style={mounted ? {} : { visibility: "hidden" }} aria-hidden={i === active ? undefined : true}>
+        <div key={i} className="pl-card" data-i={i} data-on={i === active ? "1" : "0"} ref={(el) => void (cards.current[i] = el)} style={{}} aria-hidden={i === active ? undefined : true}>
           <div className="pl-print">
             <div className="pl-shot">{srcs[i] ? <img src={srcs[i]} alt={sl.alt || sl.title || ""} draggable={false} /> : null}</div>
             <div className="pl-note">{sl.title || ""}</div>
