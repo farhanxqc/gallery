@@ -221,14 +221,21 @@ const DEFAULT_SLIDES: Slide[] = [
 ]
 
 // Every slide as an image URL; slides without one are painted after mount.
-function useSlideImages(slides: Slide[]): string[] {
-  const key = slides.map((s) => s.image || (s.palette || "dawn") + ":" + (s.seed ?? 1)).join("|")
-  const [painted, setPainted] = React.useState(() => slides.map(() => ""))
+function useSlideImages(slides: Slide[], active: number): string[] {
+  const [loaded, setLoaded] = React.useState(() => slides.map(() => ""))
   React.useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPainted(slides.map((s, i) => (s.image ? "" : paintLandscape(s.seed ?? i + 1, s.palette || "dawn"))))
-  }, [key])
-  return slides.map((s, i) => s.image || painted[i] || "")
+    const buf = 3
+    const lo = Math.max(0, active - buf)
+    const hi = Math.min(slides.length - 1, active + buf)
+    setLoaded((prev) => {
+      const next = prev.slice()
+      for (let i = lo; i <= hi; i++) {
+        if (!next[i] && slides[i].image) next[i] = slides[i].image as string
+      }
+      return next
+    })
+  }, [active, slides.length])
+  return slides.map((s, i) => s.image ? (loaded[i] || "") : "")
 }
 
 const PL_CSS = [
@@ -275,8 +282,8 @@ export default function PolaroidLineCarousel({
   ariaLabel = "Image carousel",
 }: PolaroidLineCarouselProps) {
   const n = slides.length
-  const srcs = useSlideImages(slides)
   const [active, setActive] = React.useState(0)
+  const srcs = useSlideImages(slides, active)
   const [dragging, setDragging] = React.useState(false)
   const [size, setSize] = React.useState({ w: 1200, h: 800, cw: cardWidth })
   const [mounted, setMounted] = React.useState(false)
