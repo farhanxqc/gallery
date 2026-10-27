@@ -13,7 +13,7 @@ const files = fs
 
 const lines = files.map((f, i) => {
   const n = i + 1
-  return `  { image: "${SUPABASE_URL}/${f}?width=800", title: "Photo ${n}", caption: "Photo ${n} of ${files.length}" }`
+  return `  { image: "${SUPABASE_URL}/${f}?width=600", title: "Photo ${n}", caption: "Photo ${n} of ${files.length}" }`
 })
 
 const content = `// AUTO-GENERATED. Do not edit — run \`node scripts/gen-slides.js\` instead.

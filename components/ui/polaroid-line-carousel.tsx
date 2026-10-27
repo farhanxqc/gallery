@@ -220,23 +220,7 @@ const DEFAULT_SLIDES: Slide[] = [
   { title: "Blue Hour", caption: "Pines going dark against the snow.", palette: "alpine", seed: 55 },
 ]
 
-// Every slide as an image URL; slides without one are painted after mount.
-function useSlideImages(slides: Slide[], active: number): string[] {
-  const [loaded, setLoaded] = React.useState(() => slides.map(() => ""))
-  React.useEffect(() => {
-    const buf = 3
-    const lo = Math.max(0, active - buf)
-    const hi = Math.min(slides.length - 1, active + buf)
-    setLoaded((prev) => {
-      const next = prev.slice()
-      for (let i = lo; i <= hi; i++) {
-        if (!next[i] && slides[i].image) next[i] = slides[i].image as string
-      }
-      return next
-    })
-  }, [active, slides.length])
-  return slides.map((s, i) => s.image ? (loaded[i] || "") : "")
-}
+
 
 const PL_CSS = [
   ".pl-root{position:relative;width:100%;overflow:hidden;background:var(--pl-bg);color:var(--pl-ink);user-select:none;-webkit-user-select:none;touch-action:pan-y;outline:none;cursor:grab}",
@@ -283,7 +267,7 @@ export default function PolaroidLineCarousel({
 }: PolaroidLineCarouselProps) {
   const n = slides.length
   const [active, setActive] = React.useState(0)
-  const srcs = useSlideImages(slides, active)
+  const srcs = slides.map((s) => s.image || "")
   const [dragging, setDragging] = React.useState(false)
   const [size, setSize] = React.useState({ w: 1200, h: 800, cw: cardWidth })
   const [mounted, setMounted] = React.useState(false)
