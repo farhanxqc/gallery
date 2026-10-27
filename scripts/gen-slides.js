@@ -3,6 +3,7 @@ import path from "node:path"
 
 const PUBLIC = path.join(process.cwd(), "public", "photos")
 const OUT = path.join(process.cwd(), "app", "photo-slides.ts")
+const SUPABASE_URL = "https://nqqdbcfyqbrdaiadsjcx.supabase.co/storage/v1/object/public/photos"
 
 const exts = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".avif"])
 const files = fs
@@ -12,7 +13,7 @@ const files = fs
 
 const lines = files.map((f, i) => {
   const n = i + 1
-  return `  { image: "/photos/${f}", title: "Photo ${n}", caption: "Photo ${n} of ${files.length}" }`
+  return `  { image: "${SUPABASE_URL}/${f}?width=800", title: "Photo ${n}", caption: "Photo ${n} of ${files.length}" }`
 })
 
 const content = `// AUTO-GENERATED. Do not edit — run \`node scripts/gen-slides.js\` instead.
