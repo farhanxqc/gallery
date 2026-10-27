@@ -295,7 +295,7 @@ export default function PolaroidLineCarousel({
     if (!root) return
     const ro = new ResizeObserver(() => {
       const r = root.getBoundingClientRect()
-      const cw = Math.round(Math.max(150, Math.min(cardWidth, r.width * 0.42, r.height * 0.42)))
+      const cw = Math.round(Math.max(80, Math.min(cardWidth, r.width * 0.3, r.height * 0.42)))
       setSize({ w: r.width, h: r.height, cw })
     })
     ro.observe(root)
